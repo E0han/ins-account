@@ -2,20 +2,23 @@
 #date="2017.4.29"
 #coding:utf-8 python 3.5 
 import requests
-from bs4 import BeautifulSoup
-import time
+import json
+url="http://gimmeproxy.com/api/getProxy"
+s=requests.session()
+def get_proxy(country):
+	print("[*] Get Annoymous IP Proxy")
+	mainurl="https://gimmeproxy.com/api/getProxy?get=true&anonymityLevel=0&country="+country
+	r=s.get(mainurl,verify=True)
+	dic=json.loads(r.text)
+	dic_main={dic["protocol"]:dic["curl"]}
+	print(dic_main)
+	return dic_main
+#list > table > tbody > tr:nth-child(1) > td.style1
 
-def get_proxy(n):
-	proxy_dic={}
-	proxy={}
-	url='http://www.kuaidaili.com/free/'
-	req=requests.get(url)
-	soup = BeautifulSoup(req.text,'html.parser')
-	for i in range(1,n):
-		IP=soup.select("#list > table > tbody > tr:nth-of-type("+str(i)+") > td:nth-of-type(1)")[0].string
-		PORT=soup.select("#list > table > tbody > tr:nth-of-type("+str(i)+") > td:nth-of-type(2)")[0].string			
-		print("[*]已成功获取代理ip Get IP proxy "+IP+" successfully")
-		proxy_dic["http"]='http://'+IP+':'+PORT		
-		time.sleep(1)
-	return proxy_dic
-
+def test():
+	ip=get_proxy("US")
+	url='https://api.ipify.org?format=json'
+	res=s.get(url,proxies=ip,verify=True)
+	dic=json.loads(res.text)
+	print(dic["ip"])
+test()
