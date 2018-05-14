@@ -1,0 +1,11 @@
+*.db
+.DS_Store
+venv
+env
+__pycache_
+blog_old.md
+node_modules
+.idea/*
+*.pyc
+tmp
+.python-version_
