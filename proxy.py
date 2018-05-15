@@ -4,11 +4,11 @@
 import requests
 import json
 url="http://gimmeproxy.com/api/getProxy"
-s=requests.session()
+s=requests
 def get_proxy(country):
 	print("[*] Get Annoymous IP Proxy")
-	mainurl="https://gimmeproxy.com/api/getProxy?get=true&anonymityLevel=0&country="+country
-	r=s.get(mainurl,verify=True)
+	mainurl="https://gimmeproxy.com/api/getProxy?get=true&supportsHttps=true&country="+country
+	r=s.get(mainurl)
 	dic=json.loads(r.text)
 	dic_main={'dic["protocol"]':dic["curl"], 'https':dic["curl"]}
 	print(dic_main)
@@ -18,7 +18,7 @@ def get_proxy(country):
 def test():
 	ip=get_proxy("US")
 	url='https://api.ipify.org?format=json'
-	res=s.get(url,proxies=ip,verify=True)
+	res=s.get(url, proxies=ip)
 	dic=json.loads(res.text)
 	print(dic["ip"])
 test()
