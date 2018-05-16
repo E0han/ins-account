@@ -2,7 +2,7 @@
 #coding='utf-8'
 #__author__=='0han'
 #__email__=='0han@protonmail.com'
-#__data__=='2017.8'
+#__data__=='2018.5'
 import requests,re,json,time,os,os.path,sys
 from random import *
 from bs4 import BeautifulSoup
@@ -11,29 +11,35 @@ import dic
 import get_pic
 #数据
 
+USE_PROXY = False
+
 class register():
 		_session=None
 		
 		def __init__(self):
-			self.use_proxy=proxy.get_proxy("US")
+			self.use_proxy=proxy.get_proxy("US") if USE_PROXY else None
 			print("==Instagram-robots-account-generate==\n[*] start")#可以删除
 			
 		def first_get(self):
 			global _session
 			_session=requests.session()
 			main_url='https://www.instagram.com'
-			_session.get(main_url,proxies=self.use_proxy,verify=True)
-			self.save_cookies()
-			if os.path.exists('cookiefile'):#print('have cookies')
-				self.csrf=self.read_cookies()
-				self.data=self.create_ajax()
-				print(self.data)
-				self.ins()
-				time.sleep(5)#wait for 5 seconds
-				self.my_selfie=get_pic.get_pic()#实例化——头像-轮子
-				self.my_selfie.get_selfie()#download random selfie picture to local folder
-				self.upload()#upload the selfie
-			else:
+			try:
+				_session.get(main_url,proxies=self.use_proxy,verify=True)
+				self.save_cookies()
+				if os.path.exists('cookiefile'):#print('have cookies')
+					self.csrf=self.read_cookies()
+					self.data=self.create_ajax()
+					print(self.data)
+					self.ins()
+					time.sleep(5)#wait for 5 seconds
+					self.my_selfie=get_pic.get_pic()#实例化——头像-轮子
+					self.my_selfie.get_selfie()#download random selfie picture to local folder
+					self.upload()#upload the selfie
+				else:
+					pass
+			except:
+				print("invalid proxy ip!")
 				pass
 		def get_emailaddress(self):#获取新的邮箱地址
 			email_url="https://10minutemail.net"
