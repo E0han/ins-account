@@ -10,7 +10,7 @@ def get_proxy(country):
 	mainurl="https://gimmeproxy.com/api/getProxy?get=true&supportsHttps=true&country="+country
 	r=s.get(mainurl)
 	dic=json.loads(r.text)
-	dic_main={'dic["protocol"]':dic["curl"], 'https':dic["curl"]}
+	dic_main={dic["protocol"]:dic["curl"], 'https':dic["curl"]}
 	print(dic_main)
 	return dic_main
 #list > table > tbody > tr:nth-child(1) > td.style1
