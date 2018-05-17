@@ -12,7 +12,7 @@ from random import randint
 def proxy_pool(amount_of_ip):
     pool=[]
     print("[*] Get",str(amount_of_ip),"Annoymous IP Proxy")
-    mainurl="https://gimmeproxy.com/api/getProxy?get=true&anonymityLevel=1&supportsHttps=True"
+    mainurl="https://gimmeproxy.com/api/getProxy?get=true&anonymityLevel=1&supportsHttps=True&maxCheckPeriod=300"
     for i in range(amount_of_ip):
         s=requests.session()
         r=json.loads(s.get(mainurl,verify=True).text)
@@ -32,7 +32,7 @@ def test():
     def return_random_ipproxy(pool,num):
         res={}
         ipPool = pool
-        res['https']=ipPool[randint(0,num)]
+        res['https']=ipPool[randint(0,num-1)]
         return res
     ipPool=return_random_ipproxy(proxy_pool(5),5)
     print(ipPool)
@@ -42,6 +42,5 @@ def test():
         res=s.get(urlforlocalip,proxies=ipPool,verify=True)
         dic=json.loads(res.text)
         print("[+] Your local ip address is",dic["ip"])
-    except ProxyError:
+    except:#the ProxyError is not defined yet, therefore, be carefull about this
         print("Can not connect to the ip proxy")
-test()
