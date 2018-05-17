@@ -15,10 +15,10 @@ def get_proxy(country):
 	return dic_main
 #list > table > tbody > tr:nth-child(1) > td.style1
 
-def test():
-	ip=get_proxy("US")
-	url='https://api.ipify.org?format=json'
-	res=s.get(url, proxies=ip)
-	dic=json.loads(res.text)
-	print(dic["ip"])
-test()
+# def test():
+# 	ip=get_proxy("US")
+# 	url='https://api.ipify.org?format=json'
+# 	res=s.get(url, proxies=ip)
+# 	dic=json.loads(res.text)
+# 	print(dic["ip"])
+# test()

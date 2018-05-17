@@ -1,7 +1,5 @@
 #ins robots, main script
 #coding='utf-8'
-#__author__=='0han'
-#__email__=='0han@protonmail.com'
 #__data__=='2018.5'
 import requests,re,json,time,os,os.path,sys
 from random import *
@@ -9,9 +7,10 @@ from bs4 import BeautifulSoup
 import proxy
 import dic
 import get_pic
+from login import login
 #数据
 
-USE_PROXY = False
+USE_PROXY = True
 
 class register():
 		_session=None
@@ -25,6 +24,7 @@ class register():
 			_session=requests.session()
 			main_url='https://www.instagram.com'
 			try:
+
 				_session.get(main_url,proxies=self.use_proxy,verify=True)
 				self.save_cookies()
 				if os.path.exists('cookiefile'):#print('have cookies')
@@ -33,13 +33,17 @@ class register():
 					print(self.data)
 					self.ins()
 					time.sleep(5)#wait for 5 seconds
-					self.my_selfie=get_pic.get_pic()#实例化——头像-轮子
-					self.my_selfie.get_selfie()#download random selfie picture to local folder
-					self.upload()#upload the selfie
+					login_client = login(self.u_name, self.passwd)
+					if login_client.do_first() is True:
+						print("[*]Save account to file, congrats!")
+						print(self.data)
+						self.save_account_info(self.u_name, self.passwd)
 				else:
 					pass
+
 			except:
-				print("invalid proxy ip!")
+				print("[x]Invalid proxy ip! Updating proxy now \n")
+				self.use_proxy=proxy.get_proxy("US") if USE_PROXY else None
 				pass
 		def get_emailaddress(self):#获取新的邮箱地址
 			email_url="https://10minutemail.net"
@@ -58,7 +62,7 @@ class register():
 			r.encoding='utf-8'
 			soup=BeautifulSoup(r.text,'html.parser')
 			result=soup.select(".section > div:nth-of-type("+str(randint(1,69))+")")[0].string
-			result=str(result)+"user"+str(randint(1,2000))
+			result=str(result)+"user"+str(randint(1000,30000))
 			return result
 		
 		def create_ajax(self):
@@ -86,7 +90,7 @@ class register():
 				_session.cookies.update(cookie)
 				return cookie["csrftoken"]
 		def save_account_info(self,username,password):
-			with open("account_info.py", "a+") as a:
+			with open("account_info.txt", "a+") as a:
 			    a.write("\n['"+username+"','"+password+"'],")
 			print("[*] Successful save the account info")
 		def upload(self):
@@ -128,12 +132,13 @@ class register():
 				}		
 			r = _session.post(posturl,data=self.data,headers=header,proxies=self.use_proxy,verify=True)#proxies=self.use_proxy
 			if r.ok==True:
-				print("[*] Sucessful create an account")
-				self.save_account_info(self.u_name,self.passwd)
+				print("[*] Sucessfully created an account")
 			else:
 				print("[x] Unknown Error Occurs!")
 
 test=register()
-for i in range(5):
+for i in range(100):
 	test.first_get()
-	time.sleep(15)
+	if i%10:
+		test.use_proxy=proxy.get_proxy("US") if USE_PROXY else None
+	time.sleep(3)
