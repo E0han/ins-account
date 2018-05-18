@@ -10,14 +10,13 @@ from bs4 import BeautifulSoup
 from proxy import proxy_pool
 
 class register():
-		def __init__(self):
+		def __init__(self,proxy,session):
 			#ipproxy,num
-			#self.proxy=self.get_one_from_pool(ipproxy,num)
-			self._session=None
-			print("==Instagram-robots-account-generate==\n[*] start")#可以删除 deletable
+			self.proxy=proxy
+			self._session=session
+			print("==Instagram-accounts-generator==\n[*] start")#可以删除 deletable	
 		def run(self):
-			self._session=requests.session()
-			self._session.get('https://www.instagram.com',verify=True)#proxies=self.proxy
+			self._session.get('https://www.instagram.com',proxies=self.proxy,verify=True)
 			self.save_cookies()
 			header['cookie']=str(self.read_cookies())[1:-2]
 			header['X-csrftoken']=self.read_cookies()["csrftoken"]
@@ -26,11 +25,13 @@ class register():
 			time.sleep(5)
 		def ins(self):
 			global _session
-			r = self._session.post('https://www.instagram.com/accounts/web_create_ajax/',data=self.data,headers=header,verify=True)#proxies=self.proxy
+			r = self._session.post('https://www.instagram.com/accounts/web_create_ajax/',data=self.data,proxies=self.proxy,headers=header,verify=True)
 			if r.ok==True:
 				print("[*] Sucessful create an account")
 				self.save_account_info(self.u_name,self.passwd)
+				_session.close()
 			else:
+				_session.close()
 				print("[x] Unknown Error Occurs!")
 
 		"""
@@ -43,9 +44,9 @@ class register():
 				soup = BeautifulSoup(r.text, 'html.parser')
 				return soup.input["value"]
 			def generate_FullName():
-				nameList=name['name']
-				name=nameList[randint(1,12)]
-				return name
+				nameList=name['name']#储存在dic里的姓名数据
+				namefornow=nameList[randint(1,12)]
+				return namefornow
 			def create_username():
 				data={'keyword':self.f_name,"numlines":"70","formsubmit":"Generate Username"}
 				r=requests.post("http://namegenerators.org/username-generator/",data=data,verify=True)
@@ -72,7 +73,6 @@ class register():
 			with open('./'+"cookiefile",'w')as f:
 				json.dump(self._session.cookies.get_dict(),f)#_session.cookies.save()
 		def read_cookies(self):
-			global _session
 			#_session.cookies.load()
 			#_session.headers.update(header_data)
 			with open('./'+'cookiefile')as f:
@@ -90,8 +90,3 @@ class register():
 		def save_account_info(self,username,password):
 			with open("account_info.py", "a+") as a:
 				a.write("\n['"+username+"','"+password+"'],")
-
-#proxy=proxy_pool(10)
-#print(proxy)
-test=register()
-test.run()
