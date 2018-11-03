@@ -14,7 +14,7 @@ class functions():
 		def like(self):
 			likeurl="https://www.instagram.com/web/likes/1781561095543136899/like/"
 		def follow(self,userid):
-			for i in userid
+			for i in userid:
 				header['cookie']=str(self.read_cookies())[1:-2]
 				header['X-csrftoken']=self.read_cookies()["csrftoken"]
 				self.id=self.get_userid(i)
